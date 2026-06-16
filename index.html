@@ -1,137 +1,106 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Export Manager Intelligence Dashboard</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#071B33">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Export Intel">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-
+  <meta charset="UTF-8">
+  <title>Export News</title>
   <style>
-    :root{
-      --navy:#071B33; --blue:#0E3A68; --soft:#F4F7FB; --line:#D9E2EF; --text:#162033; --muted:#61708A; --ok:#0B6B3A; --warn:#9A5B00;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--soft);color:var(--text)}
-    header{background:linear-gradient(135deg,var(--navy),var(--blue));color:white;padding:28px 32px}
-    header h1{margin:0;font-size:28px;letter-spacing:.3px}
-    header p{margin:8px 0 0;color:#DDE9F7;max-width:980px;line-height:1.45}
-    .wrap{padding:22px 32px 40px;max-width:1500px;margin:auto}
-    .panel{background:white;border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(7,27,51,.06);padding:18px;margin-bottom:18px}
-    .controls{display:grid;grid-template-columns:repeat(5,minmax(160px,1fr));gap:12px;align-items:end}
-    label{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;display:block;margin-bottom:6px}
-    select,input,button{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:14px;background:white;color:var(--text)}
-    button{background:var(--navy);color:white;border-color:var(--navy);font-weight:700;cursor:pointer}
-    button.secondary{background:white;color:var(--navy)}
-    .meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:13px}
-    .pill{background:#EEF4FB;border:1px solid var(--line);border-radius:999px;padding:6px 10px}
-    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
-    .cards{display:grid;gap:12px}
-    .card{background:white;border:1px solid var(--line);border-radius:14px;padding:15px;transition:.15s}
-    .card:hover{box-shadow:0 8px 22px rgba(7,27,51,.08);transform:translateY(-1px)}
-    .card h3{margin:0 0 8px;font-size:17px;line-height:1.35}
-    .card h3 a{color:var(--navy);text-decoration:none}.card h3 a:hover{text-decoration:underline}
-    .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}.tag{font-size:11px;border-radius:999px;background:#EFF3F8;color:#43536D;padding:4px 8px;border:1px solid #DDE6F1}.tag.cat{background:#E8F1FF;color:#0E3A68}.tag.area{background:#F4EEE4;color:#6A4200}
-    .summary{font-size:14px;line-height:1.45;color:#35435A;margin:6px 0 10px}.source{font-size:12px;color:var(--muted)}
-    .side h2,.main h2{margin:0 0 12px;font-size:18px}.side ul{padding-left:18px;margin:8px 0}.side li{margin:6px 0;line-height:1.35}.small{font-size:12px;color:var(--muted);line-height:1.45}.status{font-weight:700;color:var(--ok)}.error{color:#9B1C1C;font-weight:700}.empty{padding:24px;text-align:center;color:var(--muted)}
-    details{border:1px solid var(--line);border-radius:12px;padding:12px;background:#FBFCFE}summary{cursor:pointer;font-weight:700;color:var(--navy)}
-    @media(max-width:1000px){.controls{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}}@media(max-width:650px){header,.wrap{padding-left:16px;padding-right:16px}.controls{grid-template-columns:1fr}}
+    body { font-family: Arial, sans-serif; background:#f4f6f8; margin:0; padding:30px; }
+    h1 { color:#0b1f3a; }
+    button { padding:10px 18px; background:#0b1f3a; color:white; border:0; cursor:pointer; }
+    input { padding:10px; width:300px; margin-left:10px; }
+    .news { background:white; padding:15px; margin:15px 0; border-radius:8px; }
+    .news a { color:#0b1f3a; font-weight:bold; text-decoration:none; }
+    .date { color:#666; font-size:13px; margin-top:5px; }
   </style>
 </head>
 <body>
-<header>
-  <h1>Export Manager Intelligence Dashboard</h1>
-  <p>Notizie operative per business internazionale, geopolitica, finanza, valute, supply chain, energia, dogane e mercati. Seleziona una singola area o “Tutte le aree”.</p>
-</header>
-<div class="wrap">
-  <section class="panel">
-    <div class="controls">
-      <div><label>Area geografica</label><select id="area"><option value="ALL">Tutte le aree</option><option>Europa</option><option>Nord America</option><option>Asia</option><option>Medio Oriente</option><option>Africa</option><option>America Latina</option><option>Globale</option></select></div>
-      <div><label>Categoria</label><select id="category"><option value="ALL">Tutte le categorie</option><option>Business internazionale</option><option>Geopolitica</option><option>Finanza & mercati</option><option>Valute & banche centrali</option><option>Supply chain & logistica</option><option>Energia & materie prime</option><option>Dogane & trade compliance</option></select></div>
-      <div><label>Ricerca libera</label><input id="search" placeholder="es. dazi, euro, Cina, shipping"></div>
-      <div><label>Numero notizie</label><select id="limit"><option>30</option><option selected>50</option><option>80</option><option>120</option></select></div>
-      <div><label>Aggiornamento</label><button id="refresh">Aggiorna ora</button></div>
-    </div>
-    <div class="meta"><span class="pill">Stato: <span id="status" class="status">pronto</span></span><span class="pill">Ultimo aggiornamento: <span id="last">mai</span></span><span class="pill">Auto-refresh: ogni <strong>30 minuti</strong></span><span class="pill">Fonte tecnica: RSS pubblici + proxy CORS</span></div>
-  </section>
-  <div class="grid">
-    <main class="main"><section class="panel"><h2>Flusso notizie</h2><div id="cards" class="cards"><div class="empty">Premi “Aggiorna ora” per caricare le notizie.</div></div></section></main>
-    <aside class="side">
-      <section class="panel"><h2>Come usarla</h2><ul><li><strong>Tutte le aree</strong>: vista completa per monitoraggio quotidiano.</li><li><strong>Area specifica</strong>: restringe il flusso a Europa, Asia, Nord America, ecc.</li><li><strong>Categoria</strong>: isola temi utili a export manager: mercati, dazi, valuta, logistica.</li><li><strong>Ricerca libera</strong>: filtra per cliente, paese, materia prima, valuta o rischio.</li></ul><p class="small">Il file resta privato sul tuo PC. Le notizie vengono lette dalle fonti pubbliche quando il browser ha accesso a Internet.</p></section>
-      <section class="panel"><h2>Checklist lettura export</h2><ul><li>Ci sono nuovi dazi, sanzioni, restrizioni o controlli export?</li><li>La valuta del mercato target si sta muovendo contro euro/dollaro?</li><li>Ci sono rischi logistici: porti, shipping, canali, energia, trasporti?</li><li>Ci sono segnali di domanda: investimenti, industria, PMI, infrastrutture?</li><li>Il rischio paese è cambiato per clienti, distributori o fornitori?</li></ul></section>
-      <section class="panel"><details><summary>Fonti e query incluse</summary><div id="feedList" class="small"></div></details></section>
-    </aside>
-  </div>
-</div>
-<script>
-const FEEDS = [
-  {name:'Google News - International Business', area:'Globale', cat:'Business internazionale', url:'https://news.google.com/rss/search?q=international%20business%20OR%20global%20trade%20OR%20exports&hl=en-US&gl=US&ceid=US:en'},
-  {name:'Google News - Geopolitics', area:'Globale', cat:'Geopolitica', url:'https://news.google.com/rss/search?q=geopolitics%20OR%20sanctions%20OR%20trade%20war&hl=en-US&gl=US&ceid=US:en'},
-  {name:'Google News - Financial Markets', area:'Globale', cat:'Finanza & mercati', url:'https://news.google.com/rss/search?q=financial%20markets%20OR%20stocks%20OR%20bonds%20OR%20rates&hl=en-US&gl=US&ceid=US:en'},
-  {name:'Google News - Currencies', area:'Globale', cat:'Valute & banche centrali', url:'https://news.google.com/rss/search?q=currency%20euro%20dollar%20yen%20central%20bank%20exchange%20rate&hl=en-US&gl=US&ceid=US:en'},
-  {name:'Google News - Supply Chain', area:'Globale', cat:'Supply chain & logistica', url:'https://news.google.com/rss/search?q=supply%20chain%20shipping%20ports%20freight%20logistics&hl=en-US&gl=US&ceid=US:en'},
-  {name:'Google News - Energy Commodities', area:'Globale', cat:'Energia & materie prime', url:'https://news.google.com/rss/search?q=oil%20gas%20energy%20commodities%20metals&hl=en-US&gl=US&ceid=US:en'},
-  {name:'Google News - Customs Trade Compliance', area:'Globale', cat:'Dogane & trade compliance', url:'https://news.google.com/rss/search?q=customs%20tariffs%20export%20controls%20trade%20compliance&hl=en-US&gl=US&ceid=US:en'},
-  {name:'ECB Press Releases', area:'Europa', cat:'Valute & banche centrali', url:'https://www.ecb.europa.eu/rss/press.html'},
-  {name:'Federal Reserve Press Releases', area:'Nord America', cat:'Valute & banche centrali', url:'https://www.federalreserve.gov/feeds/press_all.xml'},
-  {name:'Europe trade business', area:'Europa', cat:'Business internazionale', url:'https://news.google.com/rss/search?q=Europe%20trade%20business%20exports%20industry&hl=en-US&gl=US&ceid=US:en'},
-  {name:'North America trade business', area:'Nord America', cat:'Business internazionale', url:'https://news.google.com/rss/search?q=North%20America%20trade%20business%20exports%20industry&hl=en-US&gl=US&ceid=US:en'},
-  {name:'Asia trade business', area:'Asia', cat:'Business internazionale', url:'https://news.google.com/rss/search?q=Asia%20trade%20business%20exports%20industry%20China%20India%20Japan&hl=en-US&gl=US&ceid=US:en'},
-  {name:'Middle East trade risk', area:'Medio Oriente', cat:'Geopolitica', url:'https://news.google.com/rss/search?q=Middle%20East%20trade%20geopolitics%20shipping%20energy&hl=en-US&gl=US&ceid=US:en'},
-  {name:'Africa trade business', area:'Africa', cat:'Business internazionale', url:'https://news.google.com/rss/search?q=Africa%20trade%20business%20exports%20infrastructure%20industry&hl=en-US&gl=US&ceid=US:en'},
-  {name:'Latin America trade business', area:'America Latina', cat:'Business internazionale', url:'https://news.google.com/rss/search?q=Latin%20America%20trade%20business%20exports%20currency&hl=en-US&gl=US&ceid=US:en'}
-];
-const proxy = url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-const $ = id => document.getElementById(id);
-function strip(html){const d=document.createElement('div');d.innerHTML=html||'';return d.textContent||d.innerText||''}
-function fmtDate(s){const d=new Date(s);return isNaN(d)?'data n.d.':d.toLocaleString('it-IT',{dateStyle:'medium',timeStyle:'short'})}
-async function loadFeed(feed){
-  const res = await fetch(proxy(feed.url)); if(!res.ok) throw new Error(feed.name);
-  const txt = await res.text(); const xml = new DOMParser().parseFromString(txt,'text/xml');
-  return [...xml.querySelectorAll('item, entry')].map(item=>({
-    title: strip(item.querySelector('title')?.textContent),
-    link: item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent || '#',
-    date: item.querySelector('pubDate')?.textContent || item.querySelector('updated')?.textContent || item.querySelector('published')?.textContent || '',
-    summary: strip(item.querySelector('description')?.textContent || item.querySelector('summary')?.textContent || '').slice(0,260),
-    source: feed.name, area: feed.area, cat: feed.cat
-  }));
-}
-function score(item,q){let t=(item.title+' '+item.summary+' '+item.source+' '+item.area+' '+item.cat).toLowerCase();return q? t.includes(q.toLowerCase()) : true}
-function render(items){
-  const area=$('area').value, cat=$('category').value, q=$('search').value.trim(), lim=parseInt($('limit').value,10);
-  let out=items.filter(i=>(area==='ALL'||i.area===area||i.area==='Globale')&&(cat==='ALL'||i.cat===cat)&&score(i,q));
-  out.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0)); out=out.slice(0,lim);
-  $('cards').innerHTML = out.length ? out.map(i=>`<article class="card"><div class="tags"><span class="tag area">${i.area}</span><span class="tag cat">${i.cat}</span><span class="tag">${i.source}</span></div><h3><a href="${i.link}" target="_blank" rel="noopener">${i.title||'Senza titolo'}</a></h3><p class="summary">${i.summary||'Anteprima non disponibile. Apri la fonte per leggere il contenuto completo.'}</p><div class="source">${fmtDate(i.date)}</div></article>`).join('') : '<div class="empty">Nessuna notizia trovata con questi filtri.</div>';
-}
-let CACHE=[];
-async function refresh(){
-  $('status').textContent='caricamento...'; $('status').className='status';
-  const selectedArea=$('area').value, selectedCat=$('category').value;
-  const feeds=FEEDS.filter(f=>(selectedArea==='ALL'||f.area===selectedArea||f.area==='Globale')&&(selectedCat==='ALL'||f.cat===selectedCat));
-  const results = await Promise.allSettled(feeds.map(loadFeed));
-  CACHE = results.filter(r=>r.status==='fulfilled').flatMap(r=>r.value);
-  const failed = results.filter(r=>r.status==='rejected').length;
-  $('status').textContent = failed ? `caricato con ${failed} fonti non disponibili` : 'aggiornato';
-  if(failed) $('status').className='error';
-  $('last').textContent=new Date().toLocaleString('it-IT'); render(CACHE);
-}
-['area','category','search','limit'].forEach(id=>$(id).addEventListener('input',()=>render(CACHE)));
-$('refresh').addEventListener('click',refresh);
-$('feedList').innerHTML='<ul>'+FEEDS.map(f=>`<li><strong>${f.area}</strong> · ${f.cat} · ${f.name}</li>`).join('')+'</ul>';
-setInterval(refresh,30*60*1000);
-refresh();
-</script>
+
+<h1>Export News</h1>
+<p>Notizie operative per export, mercati internazionali, logistica, dazi e geopolitica.</p>
+
+<button onclick="loadNews()">Aggiorna ora</button>
+<input type="text" id="search" placeholder="Cerca paese, settore, dazio..." onkeyup="filterNews()">
+
+<p id="status">Stato: pronto</p>
+
+<div id="news-container"></div>
 
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+const feeds = [
+  "https://www.ice.it/it/news/rss",
+  "https://www.exportiamo.it/rss/",
+  "https://www.ansa.it/sito/notizie/economia/economia_rss.xml",
+  "https://www.ilsole24ore.com/rss/economia.xml"
+];
+
+let allNews = [];
+
+async function loadNews() {
+  document.getElementById("status").innerText = "Caricamento notizie...";
+  document.getElementById("news-container").innerHTML = "";
+  allNews = [];
+
+  for (const feed of feeds) {
+    const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(feed);
+
+    try {
+      const response = await fetch(proxyUrl);
+      const text = await response.text();
+
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, "text/xml");
+      const items = xml.querySelectorAll("item");
+
+      items.forEach(item => {
+        allNews.push({
+          title: item.querySelector("title")?.textContent || "Senza titolo",
+          link: item.querySelector("link")?.textContent || "#",
+          date: item.querySelector("pubDate")?.textContent || "",
+          description: item.querySelector("description")?.textContent || ""
+        });
+      });
+
+    } catch (error) {
+      console.error("Errore feed:", feed, error);
+    }
+  }
+
+  renderNews(allNews);
+  document.getElementById("status").innerText = "Ultimo aggiornamento: " + new Date().toLocaleString();
+}
+
+function renderNews(newsList) {
+  const container = document.getElementById("news-container");
+  container.innerHTML = "";
+
+  if (newsList.length === 0) {
+    container.innerHTML = "<p>Nessuna notizia trovata.</p>";
+    return;
+  }
+
+  newsList.slice(0, 50).forEach(news => {
+    const div = document.createElement("div");
+    div.className = "news";
+    div.innerHTML = `
+      <a href="${news.link}" target="_blank">${news.title}</a>
+      <div class="date">${news.date}</div>
+      <p>${news.description}</p>
+    `;
+    container.appendChild(div);
   });
 }
+
+function filterNews() {
+  const query = document.getElementById("search").value.toLowerCase();
+
+  const filtered = allNews.filter(news =>
+    news.title.toLowerCase().includes(query) ||
+    news.description.toLowerCase().includes(query)
+  );
+
+  renderNews(filtered);
+}
 </script>
+
 </body>
 </html>
