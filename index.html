@@ -4,102 +4,474 @@
   <meta charset="UTF-8">
   <title>Export News</title>
   <style>
-    body { font-family: Arial, sans-serif; background:#f4f6f8; margin:0; padding:30px; }
-    h1 { color:#0b1f3a; }
-    button { padding:10px 18px; background:#0b1f3a; color:white; border:0; cursor:pointer; }
-    input { padding:10px; width:300px; margin-left:10px; }
-    .news { background:white; padding:15px; margin:15px 0; border-radius:8px; }
-    .news a { color:#0b1f3a; font-weight:bold; text-decoration:none; }
-    .date { color:#666; font-size:13px; margin-top:5px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f6fa;
+      margin: 0;
+      padding: 24px;
+      color: #001f3f;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+      color: #001f3f;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      align-items: end;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      color: #38506b;
+      text-transform: uppercase;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 11px;
+      border-radius: 8px;
+      border: 1px solid #cdd8e6;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #001f3f;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background: #003566;
+    }
+
+    .status {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+
+    .badge {
+      background: #eef5ff;
+      border: 1px solid #cddff5;
+      color: #38506b;
+      padding: 7px 11px;
+      border-radius: 999px;
+    }
+
+    .warning {
+      color: #a00000;
+      font-weight: bold;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 18px;
+    }
+
+    .news-card {
+      background: white;
+      border: 1px solid #d8e3f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .news-card h3 {
+      margin: 8px 0;
+      color: #001f3f;
+      font-size: 18px;
+    }
+
+    .news-card a {
+      color: #001f3f;
+      text-decoration: none;
+    }
+
+    .news-card a:hover {
+      text-decoration: underline;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #65758a;
+      margin-bottom: 8px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #eef5ff;
+      color: #003566;
+      border: 1px solid #d6e6f8;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    .area-tag {
+      background: #fff3dc;
+      color: #7a4a00;
+      border-color: #ffe0a8;
+    }
+
+    ul {
+      line-height: 1.6;
+    }
+
+    details {
+      margin-top: 10px;
+      border: 1px solid #d8e3f0;
+      border-radius: 10px;
+      padding: 12px;
+      background: white;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    @media (max-width: 900px) {
+      .filters, .layout {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
+
 <body>
 
-<h1>Export News</h1>
-<p>Notizie operative per export, mercati internazionali, logistica, dazi e geopolitica.</p>
+  <h1>Export News</h1>
+  <p>Dashboard operativa per export, mercati internazionali, logistica, dazi, valute e geopolitica.</p>
 
-<button onclick="loadNews()">Aggiorna ora</button>
-<input type="text" id="search" placeholder="Cerca paese, settore, dazio..." onkeyup="filterNews()">
+  <div class="panel">
+    <div class="filters">
+      <div>
+        <label>Area geografica</label>
+        <select id="area">
+          <option value="all">Tutte le aree</option>
+          <option value="Europa">Europa</option>
+          <option value="Nord America">Nord America</option>
+          <option value="Asia">Asia</option>
+          <option value="Globale">Globale</option>
+        </select>
+      </div>
 
-<p id="status">Stato: pronto</p>
+      <div>
+        <label>Categoria</label>
+        <select id="category">
+          <option value="all">Tutte le categorie</option>
+          <option value="Business internazionale">Business internazionale</option>
+          <option value="Dazi e dogana">Dazi e dogana</option>
+          <option value="Valute e banche centrali">Valute e banche centrali</option>
+          <option value="Logistica">Logistica</option>
+          <option value="Geopolitica">Geopolitica</option>
+          <option value="Materie prime">Materie prime</option>
+        </select>
+      </div>
 
-<div id="news-container"></div>
+      <div>
+        <label>Ricerca libera</label>
+        <input id="search" type="text" placeholder="es. dazi, Cina, shipping, euro">
+      </div>
+
+      <div>
+        <label>Numero notizie</label>
+        <select id="limit">
+          <option value="20">20</option>
+          <option value="50" selected>50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Aggiornamento</label>
+        <button onclick="loadNews()">Aggiorna ora</button>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="badge" id="status">Stato: pronto</span>
+      <span class="badge" id="lastUpdate">Ultimo aggiornamento: -</span>
+      <span class="badge">Fonte tecnica: RSS pubblici + proxy CORS</span>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="panel">
+      <h2>Flusso notizie</h2>
+      <div id="newsContainer"></div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <h2>Come usarla</h2>
+        <ul>
+          <li><b>Tutte le aree:</b> vista completa per monitoraggio quotidiano.</li>
+          <li><b>Area specifica:</b> restringe il flusso a Europa, Nord America, Asia o Globale.</li>
+          <li><b>Categoria:</b> filtra temi utili a export manager: mercati, dazi, valuta, logistica.</li>
+          <li><b>Ricerca libera:</b> filtra per cliente, paese, materia prima, valuta o rischio.</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h2>Checklist lettura export</h2>
+        <ul>
+          <li>Ci sono nuovi dazi, sanzioni, restrizioni o controlli export?</li>
+          <li>La valuta del mercato target si sta muovendo contro euro/dollaro?</li>
+          <li>Ci sono rischi logistici: porti, shipping, canali, energia, trasporti?</li>
+          <li>Ci sono segnali di domanda: investimenti, industria, PMI, infrastrutture?</li>
+          <li>Il rischio paese è cambiato per clienti, distributori o fornitori?</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <details>
+          <summary>Fonti incluse</summary>
+          <ul id="sourcesList"></ul>
+        </details>
+      </div>
+    </div>
+  </div>
 
 <script>
-const feeds = [
-  "https://feeds.bbci.co.uk/news/business/rss.xml",
-  "https://www.federalreserve.gov/feeds/press_all.xml",
-  "https://www.ecb.europa.eu/press/rss/press.xml",
-  "https://www.wto.org/english/news_e/news_e.xml"
+const sources = [
+  {
+    area: "Globale",
+    category: "Business internazionale",
+    name: "BBC Business",
+    url: "https://feeds.bbci.co.uk/news/business/rss.xml"
+  },
+  {
+    area: "Globale",
+    category: "Dazi e dogana",
+    name: "WTO News",
+    url: "https://www.wto.org/english/news_e/news_e.xml"
+  },
+  {
+    area: "Europa",
+    category: "Valute e banche centrali",
+    name: "European Central Bank",
+    url: "https://www.ecb.europa.eu/press/rss/press.xml"
+  },
+  {
+    area: "Nord America",
+    category: "Valute e banche centrali",
+    name: "Federal Reserve",
+    url: "https://www.federalreserve.gov/feeds/press_all.xml"
+  },
+  {
+    area: "Globale",
+    category: "Logistica",
+    name: "FreightWaves",
+    url: "https://www.freightwaves.com/feed"
+  },
+  {
+    area: "Globale",
+    category: "Logistica",
+    name: "The Loadstar",
+    url: "https://theloadstar.com/feed/"
+  },
+  {
+    area: "Globale",
+    category: "Geopolitica",
+    name: "Google News - Geopolitics",
+    url: "https://news.google.com/rss/search?q=geopolitics+trade+export&hl=en-US&gl=US&ceid=US:en"
+  },
+  {
+    area: "Europa",
+    category: "Business internazionale",
+    name: "Google News - Europe Trade",
+    url: "https://news.google.com/rss/search?q=Europe+trade+business+exports&hl=en-US&gl=US&ceid=US:en"
+  },
+  {
+    area: "Asia",
+    category: "Business internazionale",
+    name: "Google News - Asia Trade",
+    url: "https://news.google.com/rss/search?q=Asia+trade+business+exports&hl=en-US&gl=US&ceid=US:en"
+  },
+  {
+    area: "Nord America",
+    category: "Business internazionale",
+    name: "Google News - North America Trade",
+    url: "https://news.google.com/rss/search?q=North+America+trade+business+exports&hl=en-US&gl=US&ceid=US:en"
+  },
+  {
+    area: "Globale",
+    category: "Materie prime",
+    name: "Google News - Commodities",
+    url: "https://news.google.com/rss/search?q=commodities+energy+metals+trade&hl=en-US&gl=US&ceid=US:en"
+  },
+  {
+    area: "Globale",
+    category: "Dazi e dogana",
+    name: "Google News - Tariffs Customs",
+    url: "https://news.google.com/rss/search?q=tariffs+customs+trade+compliance+export&hl=en-US&gl=US&ceid=US:en"
+  }
 ];
 
 let allNews = [];
 
+function initSourcesList() {
+  const list = document.getElementById("sourcesList");
+  list.innerHTML = "";
+  sources.forEach(source => {
+    const li = document.createElement("li");
+    li.textContent = `${source.area} · ${source.category} · ${source.name}`;
+    list.appendChild(li);
+  });
+}
+
 async function loadNews() {
-  document.getElementById("status").innerText = "Caricamento notizie...";
-  document.getElementById("news-container").innerHTML = "";
+  const status = document.getElementById("status");
+  const container = document.getElementById("newsContainer");
+
+  status.innerHTML = "Stato: caricamento...";
+  container.innerHTML = "";
   allNews = [];
 
-  for (const feed of feeds) {
-    const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(feed);
+  let errors = 0;
 
+  for (const source of sources) {
     try {
+      const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(source.url);
       const response = await fetch(proxyUrl);
-      const text = await response.text();
 
+      if (!response.ok) {
+        errors++;
+        continue;
+      }
+
+      const text = await response.text();
       const parser = new DOMParser();
       const xml = parser.parseFromString(text, "text/xml");
       const items = xml.querySelectorAll("item");
 
+      if (!items.length) {
+        errors++;
+        continue;
+      }
+
       items.forEach(item => {
+        const title = cleanText(item.querySelector("title")?.textContent || "");
+        const link = item.querySelector("link")?.textContent || "#";
+        const description = cleanText(item.querySelector("description")?.textContent || "");
+        const dateRaw = item.querySelector("pubDate")?.textContent || "";
+
         allNews.push({
-          title: item.querySelector("title")?.textContent || "Senza titolo",
-          link: item.querySelector("link")?.textContent || "#",
-          date: item.querySelector("pubDate")?.textContent || "",
-          description: item.querySelector("description")?.textContent || ""
+          title,
+          link,
+          description,
+          date: dateRaw,
+          area: source.area,
+          category: source.category,
+          sourceName: source.name
         });
       });
 
     } catch (error) {
-      console.error("Errore feed:", feed, error);
+      errors++;
     }
   }
 
-  renderNews(allNews);
-  document.getElementById("status").innerText = "Ultimo aggiornamento: " + new Date().toLocaleString();
+  allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  status.innerHTML = errors === 0
+    ? "Stato: caricato correttamente"
+    : `<span class="warning">Stato: caricato con ${errors} fonti non disponibili</span>`;
+
+  document.getElementById("lastUpdate").innerText =
+    "Ultimo aggiornamento: " + new Date().toLocaleString();
+
+  renderNews();
 }
 
-function renderNews(newsList) {
-  const container = document.getElementById("news-container");
+function renderNews() {
+  const area = document.getElementById("area").value;
+  const category = document.getElementById("category").value;
+  const query = document.getElementById("search").value.toLowerCase();
+  const limit = parseInt(document.getElementById("limit").value);
+  const container = document.getElementById("newsContainer");
+
+  let filtered = allNews.filter(news => {
+    const matchesArea = area === "all" || news.area === area;
+    const matchesCategory = category === "all" || news.category === category;
+    const matchesQuery =
+      !query ||
+      news.title.toLowerCase().includes(query) ||
+      news.description.toLowerCase().includes(query) ||
+      news.sourceName.toLowerCase().includes(query);
+
+    return matchesArea && matchesCategory && matchesQuery;
+  });
+
+  filtered = filtered.slice(0, limit);
+
   container.innerHTML = "";
 
-  if (newsList.length === 0) {
-    container.innerHTML = "<p>Nessuna notizia trovata.</p>";
+  if (filtered.length === 0) {
+    container.innerHTML = "<p>Nessuna notizia trovata con questi filtri.</p>";
     return;
   }
 
-  newsList.slice(0, 50).forEach(news => {
-    const div = document.createElement("div");
-    div.className = "news";
-    div.innerHTML = `
-      <a href="${news.link}" target="_blank">${news.title}</a>
-      <div class="date">${news.date}</div>
+  filtered.forEach(news => {
+    const card = document.createElement("div");
+    card.className = "news-card";
+
+    card.innerHTML = `
+      <span class="tag area-tag">${news.area}</span>
+      <span class="tag">${news.category}</span>
+      <span class="tag">${news.sourceName}</span>
+      <h3><a href="${news.link}" target="_blank">${news.title}</a></h3>
+      <div class="meta">${formatDate(news.date)}</div>
       <p>${news.description}</p>
     `;
-    container.appendChild(div);
+
+    container.appendChild(card);
   });
 }
 
-function filterNews() {
-  const query = document.getElementById("search").value.toLowerCase();
-
-  const filtered = allNews.filter(news =>
-    news.title.toLowerCase().includes(query) ||
-    news.description.toLowerCase().includes(query)
-  );
-
-  renderNews(filtered);
+function cleanText(text) {
+  const div = document.createElement("div");
+  div.innerHTML = text;
+  return div.textContent || div.innerText || "";
 }
+
+function formatDate(dateString) {
+  if (!dateString) return "Data non disponibile";
+  const date = new Date(dateString);
+  if (isNaN(date)) return dateString;
+  return date.toLocaleString("it-IT");
+}
+
+document.getElementById("area").addEventListener("change", renderNews);
+document.getElementById("category").addEventListener("change", renderNews);
+document.getElementById("search").addEventListener("input", renderNews);
+document.getElementById("limit").addEventListener("change", renderNews);
+
+initSourcesList();
+loadNews();
 </script>
 
 </body>
